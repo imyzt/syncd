@@ -4,7 +4,7 @@
 # license that can be found in the LICENSE file.
 # ************************************************************
 
-create database `syncd` default charset utf8mb4;
+create database if not exists `syncd` default charset utf8mb4;
 
 use `syncd`;
 

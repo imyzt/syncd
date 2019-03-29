@@ -1,0 +1,41 @@
+version: "3"
+services:
+  syncd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: syncd
+    ports: 
+      - 8878:8878
+    networks:
+      - syncd-network
+    depends_on:
+      - mysql
+    volumes:
+      - /tmp/syncd_data:/tmp/syncd_data
+      - /usr/local/maven-source/apache-maven-3.6.0:/usr/local/maven-source/apache-maven-3.6.0
+      - /usr/lib/jvm/jdk1.8.0_144:/usr/lib/jvm/jdk1.8.0_144
+      - /etc/profile:/etc/profile
+    restart: always
+    privileged: true
+  mysql:
+    image: mysql:5.7
+    container_name: syncd_mysql
+    expose: 
+      - 3306
+    networks:
+      - syncd-network
+    environment:
+      MYSQL_USER: syncd
+      MYSQL_PASSWORD: syncd
+      MYSQL_DATABASE: syncd
+      MYSQL_ROOT_PASSWORD: syncd^&@
+    volumes:
+      - $PWD/script/sql/syncd_v2.sql:/docker-entrypoint-initdb.d/init.sql
+      - /data/mysql/syncd:/var/lib/mysql
+    restart: always
+    command: ['mysqld', '--character-set-server=utf8mb4']
+networks:
+  syncd-network:
+    driver: bridge
+
